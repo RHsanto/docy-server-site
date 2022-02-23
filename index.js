@@ -20,7 +20,23 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     await client.connect();
-    const database = client.db("onsTour");
+    const database = client.db("Docy");
+    const blogCollection = database.collection("blogs");
+
+    // for posting blogs
+    app.post("/blogs", async (req, res) => {
+      const blog = req.body;
+      const result = await blogCollection.insertOne(blog);
+      console.log(result);
+      res.json(result);
+    });
+
+    // for getting all blog
+    app.get("/blogs", async (req, res) => {
+      const cursor = blogCollection.find({});
+      const blogs = await cursor.toArray();
+      res.json(blogs);
+    });
   } finally {
     // await client.close();
   }
