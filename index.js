@@ -37,6 +37,15 @@ async function run() {
       const blogs = await cursor.toArray();
       res.json(blogs);
     });
+
+    // for single blog
+    app.get("/blogs/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log("getting specific service", id);
+      const query = { _id: ObjectId(id) };
+      const service = await blogCollection.findOne(query);
+      res.json(service);
+    });
   } finally {
     // await client.close();
   }
