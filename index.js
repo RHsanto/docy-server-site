@@ -22,6 +22,7 @@ async function run() {
     await client.connect();
     const database = client.db("Docy");
     const blogCollection = database.collection("blogs");
+    const usersColletion = database.collection("users");
 
     // for posting blogs
     app.post("/blogs", async (req, res) => {
@@ -48,9 +49,23 @@ async function run() {
     });
 
     // for updateing the blog || adding comment
-    app.put("/blog", async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: ObjectId(id) };
+    // app.put("/blog", async (req, res) => {
+    //   const id = req.params.id;
+    //   const query = { _id: ObjectId(id) };
+    //   const options = { upsert: true };
+    //   const updateDocs = { $set: req.body };
+    //   const result = await usersColletion.updateOne(query, updateDocs, options);
+    // });
+
+    // user post api
+    app.post("/users", async (req, res) => {
+      const cursor = await usersColletion.insertOne(req.body);
+      res.json(cursor);
+    });
+
+    // users put api
+    app.put("/users", async (req, res) => {
+      const query = { email: req.body.email };
       const options = { upsert: true };
       const updateDocs = { $set: req.body };
       const result = await usersColletion.updateOne(query, updateDocs, options);
