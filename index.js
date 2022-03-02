@@ -70,6 +70,30 @@ async function run() {
       const updateDocs = { $set: req.body };
       const result = await usersColletion.updateOne(query, updateDocs, options);
     });
+
+    // All user information
+    // app.get("/users", async (req, res) => {
+    //   const cursor = usersColletion.find({});
+    //   const users = await cursor.toArray();
+    //   res.json(users);
+    // });
+    app.get("/users", async (req, res) => {
+      const user = usersColletion.find({});
+      const result = await user.toArray();
+      res.send(result);
+    });
+
+    // users information by email
+    app.get("/users/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const user = await usersColletion.findOne(query);
+      // let isAdmin = false;
+      // if (user?.role === "admin") {
+      //   isAdmin = true;
+      // }
+      res.json(user);
+    });
   } finally {
     // await client.close();
   }
