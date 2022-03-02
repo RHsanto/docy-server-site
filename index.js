@@ -49,13 +49,16 @@ async function run() {
     });
 
     // for updateing the blog || adding comment
-    // app.put("/blog", async (req, res) => {
-    //   const id = req.params.id;
-    //   const query = { _id: ObjectId(id) };
-    //   const options = { upsert: true };
-    //   const updateDocs = { $set: req.body };
-    //   const result = await usersColletion.updateOne(query, updateDocs, options);
-    // });
+    app.put("/blog/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updateDocs = {
+        $push: { comment: req.body },
+      };
+      const result = await blogCollection.updateOne(query, updateDocs, options);
+      console;
+    });
 
     // user post api
     app.post("/users", async (req, res) => {
