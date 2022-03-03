@@ -11,6 +11,7 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+// mongo url and client
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.avm9c.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
@@ -19,6 +20,7 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
+    // databases here
     await client.connect();
     const database = client.db("Docy");
     const blogCollection = database.collection("blogs");
@@ -40,12 +42,10 @@ async function run() {
     });
 
     // for single blog
-    app.get("/blogs/:id", async (req, res) => {
-      const id = req.params.id;
-      console.log("getting specific service", id);
-      const query = { _id: ObjectId(id) };
-      const service = await blogCollection.findOne(query);
-      res.json(service);
+    app.get("/blog/:id", async (req, res) => {
+      const query = { _id: ObjectId(req.params.id) };
+      const cursor = await blogCollection.findOne(query);
+      res.json(cursor);
     });
 
     // for updateing the blog || adding comment
