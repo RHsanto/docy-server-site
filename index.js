@@ -34,7 +34,7 @@ async function run() {
       res.json(result);
     });
 
-    // for getting all blog
+    // for getting all blog //
     app.get("/blogs", async (req, res) => {
       const cursor = blogCollection.find({});
       const blogs = await cursor.toArray();
