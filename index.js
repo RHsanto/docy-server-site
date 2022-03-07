@@ -26,6 +26,7 @@ async function run() {
     const database = client.db("Docy");
     const blogCollection = database.collection("blogs");
     const usersColletion = database.collection("users");
+    const emailsColletion = database.collection("emails");
 
     // for posting blogs
     app.post("/blogs", async (req, res) => {
@@ -98,6 +99,17 @@ async function run() {
       // }
       res.json(user);
     });
+    // send email to admin
+      app.post("/emails", async (req, res) => {
+        const data = await emailsColletion.insertOne(req.body);
+        res.json(data);
+      });
+    //  get users emails
+        app.get("/emails", async (req, res) => {
+          const data = emailsColletion.find({});
+          const emails = await data.toArray();
+          res.json(emails);
+        });
   } finally {
     // await client.close();
   }
