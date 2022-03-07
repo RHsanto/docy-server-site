@@ -98,6 +98,16 @@ async function run() {
       // }
       res.json(user);
     });
+
+    // blog delete api
+    app.delete("/blog/:id", async (req, res) => {
+      const query = { _id: ObjectId(req.params.id) };
+      const result = await blogCollection.deleteOne(query);
+      res.json(result);
+    });
+
+
+
   } finally {
     // await client.close();
   }
