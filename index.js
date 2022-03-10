@@ -27,6 +27,7 @@ async function run() {
     const blogCollection = database.collection("blogs");
     const usersColletion = database.collection("users");
     const emailsColletion = database.collection("emails");
+    const manageUserCollection = database.collection("manage-users");
 
     // for posting blogs
     app.post("/blogs", async (req, res) => {
@@ -127,6 +128,21 @@ async function run() {
           const user = await emailsColletion.findOne(query);
           res.json(user);
         });
+
+   //get all manage user info 
+   app.get("/manage-users", async (req,res)=>{
+    const data = manageUserCollection.find({});
+    const mangeUser = await data.toArray();
+    res.json(mangeUser);
+   })
+
+   //  get single users emails
+    app.get("/manage-users/:id", async (req, res) => {
+   const query = { _id: ObjectId(req.params.id) };
+   const user = await manageUserCollection.findOne(query);
+   res.json(user);
+});
+
 
 
   } finally {
