@@ -73,15 +73,68 @@ async function run() {
       const query = { email: req.body.email };
       const options = { upsert: true };
       const updateDocs = { $set: req.body };
-      const result = await usersColletion.updateOne(query, updateDocs, options);
+
+      // getting user info if already have in the db
+      const userInfo = await usersColletion.findOne(query);
+      if (userInfo) {
+        res.send("already in the db ");
+      } else {
+        const result = await usersColletion.updateOne(
+          query,
+          updateDocs,
+          options
+        );
+      }
     });
 
-    // All user information
-    // app.get("/users", async (req, res) => {
-    //   const cursor = usersColletion.find({});
-    //   const users = await cursor.toArray();
-    //   res.json(users);
-    // });
+    // users follow and following api start here
+    app.put("/user", async (req, res) => {
+      const bloggerId = req.body.bloggerId;
+      const userId = req.body.userId;
+      const options = { upsert: true };
+
+      // getting blogger info here
+      const blogger = await usersColletion.findOne({
+        _id: ObjectId(bloggerId),
+      });
+      const bloggerPayload = {
+        id: blogger?._id,
+        email: blogger?.email,
+        name: blogger?.displayName,
+        image: blogger?.image,
+      };
+      // getting user info here
+      const user = await usersColletion.findOne({ _id: ObjectId(userId) });
+      const userPayload = {
+        id: user?._id,
+        email: user?.email,
+        name: user?.displayName,
+        image: user?.image,
+      };
+
+      // update blogger here
+      const bloggerDocs = {
+        $push: { followers: userPayload },
+      };
+      // update user here
+      const userDocs = {
+        $push: { following: bloggerPayload },
+      };
+
+      const updateBlogger = await usersColletion.updateOne(
+        blogger,
+        bloggerDocs,
+        options
+      );
+      const updateUser = await usersColletion.updateOne(
+        user,
+        userDocs,
+        options
+      );
+      res.send("followers followwing updated");
+    });
+    // and user followw and following api end here
+
     app.get("/users", async (req, res) => {
       const user = usersColletion.find({});
       const result = await user.toArray();
@@ -107,21 +160,18 @@ async function run() {
       res.json(result);
     });
 
-
     // send email to admin
-      app.post("/emails", async (req, res) => {
-        const data = await emailsColletion.insertOne(req.body);
-        res.json(data);
-      });
+    app.post("/emails", async (req, res) => {
+      const data = await emailsColletion.insertOne(req.body);
+      res.json(data);
+    });
 
     //  get users emails
-        app.get("/emails", async (req, res) => {
-          const data = emailsColletion.find({});
-          const emails = await data.toArray();
-          res.json(emails);
-        });
-
-
+    app.get("/emails", async (req, res) => {
+      const data = emailsColletion.find({});
+      const emails = await data.toArray();
+      res.json(emails);
+    });
   } finally {
     // await client.close();
   }
