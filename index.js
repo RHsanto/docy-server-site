@@ -172,6 +172,13 @@ async function run() {
       const emails = await data.toArray();
       res.json(emails);
     });
+
+    //  get single users emails
+    app.get("/emails/:id", async (req, res) => {
+      const query = { _id: ObjectId(req.params.id) };
+      const user = await emailsColletion.findOne(query);
+      res.json(user);
+    });
   } finally {
     // await client.close();
   }
