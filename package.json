@@ -4,13 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "react-scripts start",
-    "start": "serve -s build",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "heroku-postbuild": "npm run build"
-    },
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "start-dev": "nodemon index.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/thekawsarhossain/Docs-server-site.git"
@@ -27,7 +24,6 @@
     "dotenv": "^16.0.0",
     "express": "^4.17.2",
     "mongodb": "^4.3.1",
-    "nodemon": "^2.0.15",
-    "serve": "^13.0.2"
+    "nodemon": "^2.0.15"
   }
 }
