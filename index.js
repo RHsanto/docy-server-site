@@ -28,6 +28,7 @@ async function run() {
     const usersColletion = database.collection("users");
     const emailsColletion = database.collection("emails");
     const manageUserCollection = database.collection("manage-users");
+    const reviewsCollection = database.collection("reviews");
 
     // for posting blogs
     app.post("/blogs", async (req, res) => {
@@ -213,6 +214,33 @@ async function run() {
       const user = await emailsColletion.findOne(query);
       res.json(user);
     });
+
+ // for posting reviews
+ app.post("/addReviews", async (req, res) => {
+  const blog = req.body;
+  const result = await reviewsCollection.insertOne(blog);
+  console.log(result);
+  res.json(result);
+});
+ // for posting reviews
+ app.get("/reviews", async (req, res) => {
+  const data = reviewsCollection.find({});
+  const reviews = await data.toArray();
+  res.json(reviews);
+});
+
+ // UPDATE STATUS 
+ app.put('/reviews', async(req,res)=>{
+  const option = {upsert : true};
+  const updateStatus ={
+    $set:{
+      status: 'Approved',
+    },
+  };
+  const result = await reviewsCollection.updateOne(filter,updateStatus,option);
+  res.json(result)
+})
+
 
   } finally {
     // await client.close();
