@@ -68,7 +68,7 @@ async function run() {
       res.json(cursor);
     });
 
-    // users put api
+    // users when the first time register put api
     app.put("/users", async (req, res) => {
       const query = { email: req.body.email };
       const options = { upsert: true };
@@ -85,6 +85,16 @@ async function run() {
           options
         );
       }
+    });
+
+    // user pofile update api here
+    app.put("/profile-update", async (req, res) => {
+      const query = { email: req.body.email };
+      const options = { upsert: true };
+      const updateDocs = { $set: req.body };
+      const result = await usersColletion.updateOne(query, updateDocs, options);
+      res.json(result);
+      console.log(result);
     });
 
     // users follow and following api start here
