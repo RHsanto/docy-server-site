@@ -5,7 +5,7 @@ require("dotenv").config();
 const cors = require("cors");
 
 const app = express();
-const port = process.env.PORT || 4200;
+const port = process.env.PORT || 5000;
 
 // middleware
 app.use(cors());
@@ -253,10 +253,10 @@ app.get("/", (req, res) => {
   res.send("Programming Folks!");
 });
 
-// app.listen(port, () => {
-//   console.log(`Example app listening at http://localhost:${port}`);
-// });
-
-app.listen(process.env.PORT || 4200, function(){
-  console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`);
 });
+
+// app.listen(process.env.PORT || 5000, function(){
+//   console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
+// });
