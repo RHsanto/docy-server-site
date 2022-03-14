@@ -244,11 +244,25 @@ async function run() {
     });
 
     // for posting Questions
-    app.post("/question", async (req, res) => {
+    app.post("/questions", async (req, res) => {
       const question = req.body;
       const result = await questionCollection.insertOne(question);
       console.log(result);
       res.json(result);
+    });
+
+    // for getting all question //
+    app.get("/questions", async (req, res) => {
+      const cursor = questionCollection.find({});
+      const questions = await cursor.toArray();
+      res.json(questions);
+    });
+
+    // for single question
+    app.get("/questions/:id", async (req, res) => {
+      const query = { _id: ObjectId(req.params.id) };
+      const cursor = await questionCollection.findOne(query);
+      res.json(cursor);
     });
   } finally {
     // await client.close();
