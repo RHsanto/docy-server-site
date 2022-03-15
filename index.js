@@ -264,6 +264,22 @@ async function run() {
       const cursor = await questionCollection.findOne(query);
       res.json(cursor);
     });
+
+    // for updating the question || adding answer
+    app.put("/question/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updateDocs = {
+        $push: { answers: req.body },
+      };
+      const result = await questionCollection.updateOne(
+        query,
+        updateDocs,
+        options
+      );
+      console;
+    });
   } finally {
     // await client.close();
   }
