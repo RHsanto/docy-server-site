@@ -27,6 +27,9 @@ async function run() {
     const blogCollection = database.collection("blogs");
     const usersColletion = database.collection("users");
     const emailsColletion = database.collection("emails");
+    const manageUserCollection = database.collection("manage-users");
+    const reviewsCollection = database.collection("reviews");
+    const questionCollection = database.collection("question");
 
     // for posting blogs
     app.post("/blogs", async (req, res) => {
@@ -197,6 +200,94 @@ async function run() {
       const user = await emailsColletion.findOne(query);
       res.json(user);
     });
+
+    //get all manage user info
+    app.get("/manage-users", async (req, res) => {
+      const data = manageUserCollection.find({});
+      const mangeUser = await data.toArray();
+      res.json(mangeUser);
+    });
+
+    //  get single users emails
+    app.get("/manage-users/:id", async (req, res) => {
+      const query = { _id: ObjectId(req.params.id) };
+      const user = await manageUserCollection.findOne(query);
+      res.json(user);
+    });
+
+    app.get("/emails/:id", async (req, res) => {
+      const query = { _id: ObjectId(req.params.id) };
+      const user = await emailsColletion.findOne(query);
+      res.json(user);
+    });
+
+    // for posting reviews
+    app.post("/addReviews", async (req, res) => {
+      const blog = req.body;
+      const result = await reviewsCollection.insertOne(blog);
+      console.log(result);
+      res.json(result);
+    });
+    // for posting reviews
+    app.get("/reviews", async (req, res) => {
+      const data = reviewsCollection.find({});
+      const reviews = await data.toArray();
+      res.json(reviews);
+    });
+
+    // UPDATE STATUS
+    app.put("/reviews", async (req, res) => {
+      const option = { upsert: true };
+      const updateStatus = {
+        $set: {
+          status: "Approved",
+        },
+      };
+      const result = await reviewsCollection.updateOne(
+        filter,
+        updateStatus,
+        option
+      );
+      res.json(result);
+    });
+
+    // for posting Questions
+    app.post("/questions", async (req, res) => {
+      const question = req.body;
+      const result = await questionCollection.insertOne(question);
+      console.log(result);
+      res.json(result);
+    });
+
+    // for getting all question //
+    app.get("/questions", async (req, res) => {
+      const cursor = questionCollection.find({});
+      const questions = await cursor.toArray();
+      res.json(questions);
+    });
+
+    // for single question
+    app.get("/questions/:id", async (req, res) => {
+      const query = { _id: ObjectId(req.params.id) };
+      const cursor = await questionCollection.findOne(query);
+      res.json(cursor);
+    });
+
+    // for updating the question || adding answer
+    app.put("/question/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updateDocs = {
+        $push: { answers: req.body },
+      };
+      const result = await questionCollection.updateOne(
+        query,
+        updateDocs,
+        options
+      );
+      console;
+    });
   } finally {
     // await client.close();
   }
@@ -211,3 +302,7 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
+
+// app.listen(process.env.PORT || 5000, function(){
+//   console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
+// });
