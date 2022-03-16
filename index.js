@@ -35,34 +35,50 @@ async function run() {
     app.post("/blogs", async (req, res) => {
       const blog = req.body;
       const result = await blogCollection.insertOne(blog);
-      console.log(result);
       res.json(result);
     });
 
     // for getting all blog //
     app.get("/blogs", async (req, res) => {
-      const cursor = blogCollection.find({});
-      const blogs = await cursor.toArray();
+      const cursor = blogCollection?.find({});
+      const blogs = await cursor?.toArray();
       res.json(blogs);
     });
 
     // for single blog
     app.get("/blog/:id", async (req, res) => {
-      const query = { _id: ObjectId(req.params.id) };
-      const cursor = await blogCollection.findOne(query);
+      const query = { _id: ObjectId(req?.params?.id) };
+      const cursor = await blogCollection?.findOne(query);
       res.json(cursor);
+      console.log(cursor);
     });
 
-    // for updateing the blog || adding comment
+    // blog delete api
+    app.delete("/blog/:id", async (req, res) => {
+      const query = { _id: ObjectId(req?.params?.id) };
+      const result = await blogCollection?.deleteOne(query);
+      res.json(result);
+    });
+
+    // for updating the blog || adding comment
     app.put("/blog/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
       const options = { upsert: true };
       const updateDocs = {
-        $push: { comment: req.body },
+        $push: { comment: req?.body },
       };
       const result = await blogCollection.updateOne(query, updateDocs, options);
-      console;
+    });
+
+    // reporting blog
+    app.put("/blog/:id/reportBlog", async (req, res) => {
+      const query = { _id: ObjectId(req?.params?.id) };
+      const updateDocs = {
+        $push: { reports: req.body },
+      };
+      const result = await blogCollection.updateOne(query, updateDocs);
+      console.log(result);
     });
 
     // user post api
@@ -97,7 +113,6 @@ async function run() {
       const updateDocs = { $set: req.body };
       const result = await usersColletion.updateOne(query, updateDocs, options);
       res.json(result);
-      console.log(result);
     });
 
     // users follow and following api start here
@@ -144,7 +159,7 @@ async function run() {
         userDocs,
         options
       );
-      res.send("followers followwing updated");
+      res.send("followers following updated");
     });
     // and user followw and following api end here
 
@@ -164,13 +179,6 @@ async function run() {
       //   isAdmin = true;
       // }
       res.json(user);
-    });
-
-    // blog delete api
-    app.delete("/blog/:id", async (req, res) => {
-      const query = { _id: ObjectId(req.params.id) };
-      const result = await blogCollection.deleteOne(query);
-      res.json(result);
     });
 
     // send email to admin
