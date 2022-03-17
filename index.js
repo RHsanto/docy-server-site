@@ -280,6 +280,16 @@ async function run() {
       );
       console;
     });
+
+    //make admin
+
+    app.put("/users/:email", async (req, res) => {
+      const user = req.body;
+      const filter = { email: user.email };
+      const updateUser = { $set: { role: "admin" } };
+      const result = await usersColletion.updateOne(filter, updateUser);
+      res.json(result);
+    });
   } finally {
     // await client.close();
   }
