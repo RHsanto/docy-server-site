@@ -308,7 +308,7 @@ app.get("/", (req, res) => {
 });
 
 app.use((req, res, next) => {
-  next(createError(404, "Your requested content was not found!"));
+  throw error("Your requested content was not found!")
 })
 
 app.use((err, req, res, next) => {
