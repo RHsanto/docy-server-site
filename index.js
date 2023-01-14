@@ -308,7 +308,7 @@ app.get("/", (req, res) => {
 });
 
 app.use((req, res, next) => {
-  throw error("Your requested content was not found!")
+  next("Your requested content was not found!")
 })
 
 app.use((err, req, res, next) => {
@@ -324,7 +324,7 @@ app.use((err, req, res, next) => {
 })
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+  console.log(`app listening at http://localhost:${port}`);
 });
 
 // app.listen(process.env.PORT || 5000, function(){
