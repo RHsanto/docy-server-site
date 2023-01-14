@@ -297,6 +297,23 @@ async function run() {
       const result = await usersColletion.updateOne(filter, updateUser);
       return res.status(200).json(result);
     });
+
+    app.use((req, res, next) => {
+      next("Your requested content was not found!")
+    })
+    
+    app.use((err, req, res, next) => {
+      if(req.headerSent){
+          next('There was a problem!');
+      }else{
+          if(err.message){
+              res.status(500).json({"error": err.message})
+          }  else{
+              res.status(500).json({"error": "There was an problem in server side"})
+          }
+      }
+    })
+
   } finally {
     // await client.close();
   }
@@ -307,22 +324,6 @@ run().catch(console.dir);
 app.get("/", (req, res) => {
   return res.status(200).json(result);
 });
-
-app.use((req, res, next) => {
-  next("Your requested content was not found!")
-})
-
-app.use((err, req, res, next) => {
-  if(req.headerSent){
-      next('There was a problem!');
-  }else{
-      if(err.message){
-          res.status(500).json({"error": err.message})
-      }  else{
-          res.status(500).json({"error": "There was an problem in server side"})
-      }
-  }
-})
 
 app.listen(port, () => {
   console.log(`app listening at http://localhost:${port}`);
