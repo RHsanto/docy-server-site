@@ -34,29 +34,28 @@ async function run() {
     app.post("/blogs", async (req, res) => {
       const blog = req.body;
       const result = await blogCollection.insertOne(blog);
-      res.json(result);
+      return res.status(200).json(result);
     });
 
     // for getting all blog //
     app.get("/blogs", async (req, res) => {
       const cursor = blogCollection?.find({});
       const blogs = await cursor?.toArray();
-      res.json(blogs);
+      return res.status(200).json(blogs);
     });
 
     // for single blog
     app.get("/blog/:id", async (req, res) => {
       const query = { _id: ObjectId(req?.params?.id) };
       const cursor = await blogCollection?.findOne(query);
-      res.json(cursor);
-      console.log(cursor);
+      return res.status(200).json(cursor);
     });
 
     // blog delete api
     app.delete("/blog/:id", async (req, res) => {
       const query = { _id: ObjectId(req?.params?.id) };
       const result = await blogCollection?.deleteOne(query);
-      res.json(result);
+      return res.status(200).json(result);
     });
 
     // for updating the blog || adding comment
@@ -68,6 +67,7 @@ async function run() {
         $push: { comment: req?.body },
       };
       const result = await blogCollection.updateOne(query, updateDocs, options);
+      return res.status(200).json(result);
     });
 
     // reporting blog
@@ -77,13 +77,13 @@ async function run() {
         $push: { reports: req.body },
       };
       const result = await blogCollection.updateOne(query, updateDocs);
-      console.log(result);
+      return res.status(200).json(result);
     });
 
     // user post api
     app.post("/users", async (req, res) => {
       const cursor = await usersColletion.insertOne(req.body);
-      res.json(cursor);
+      return res.status(200).json(cursor);
     });
 
     // users when the first time register put api
@@ -95,7 +95,7 @@ async function run() {
       // getting user info if already have in the db
       const userInfo = await usersColletion.findOne(query);
       if (userInfo) {
-        res.send("already in the db ");
+        return res.send("already in the db ");
       } else {
         const result = await usersColletion.updateOne(
           query,
@@ -103,6 +103,7 @@ async function run() {
           options
         );
       }
+      return res.status(200).json(result);
     });
 
     // user pofile update api here
@@ -111,7 +112,7 @@ async function run() {
       const options = { upsert: true };
       const updateDocs = { $set: req.body };
       const result = await usersColletion.updateOne(query, updateDocs, options);
-      res.json(result);
+      return res.status(200).json(result);
     });
 
     // users follow and following api start here
@@ -158,7 +159,8 @@ async function run() {
         userDocs,
         options
       );
-      res.send("followers following updated");
+
+      return res.status(200).json("followers following updated");
     });
     // and user followw and following api end here
 
@@ -177,61 +179,60 @@ async function run() {
       // if (user?.role === "admin") {
       //   isAdmin = true;
       // }
-      res.json(user);
+      return res.status(200).json(user);
     });
 
     // send email to admin
     app.post("/emails", async (req, res) => {
       const data = await emailsColletion.insertOne(req.body);
-      res.json(data);
+      return res.status(200).json(data);
     });
 
     //  get users emails
     app.get("/emails", async (req, res) => {
       const data = emailsColletion.find({});
       const emails = await data.toArray();
-      res.json(emails);
+      return res.status(200).json(emails);
     });
 
     //  get single users emails
     app.get("/emails/:id", async (req, res) => {
       const query = { _id: ObjectId(req.params.id) };
       const user = await emailsColletion.findOne(query);
-      res.json(user);
+      return res.status(200).json(user);
     });
 
     //get all manage user info
     app.get("/manage-users", async (req, res) => {
       const data = manageUserCollection.find({});
       const mangeUser = await data.toArray();
-      res.json(mangeUser);
+      return res.status(200).json(mangeUser);
     });
 
     //  get single users emails
     app.get("/manage-users/:id", async (req, res) => {
       const query = { _id: ObjectId(req.params.id) };
       const user = await manageUserCollection.findOne(query);
-      res.json(user);
+      return res.status(200).json(user);
     });
 
     app.get("/emails/:id", async (req, res) => {
       const query = { _id: ObjectId(req.params.id) };
       const user = await emailsColletion.findOne(query);
-      res.json(user);
+      return res.status(200).json(user);
     });
 
     // for posting reviews
     app.post("/add-reviews", async (req, res) => {
       const blog = req.body;
       const result = await reviewsCollection.insertOne(blog);
-      console.log(result);
-      res.json(result);
+      return res.status(200).json(result);
     });
     // for posting reviews
     app.get("/reviews", async (req, res) => {
       const data = reviewsCollection.find({});
       const reviews = await data.toArray();
-      res.json(reviews);
+      return res.status(200).json(reviews);
     });
 
     // UPDATE STATUS
@@ -247,7 +248,7 @@ async function run() {
         updateStatus,
         option
       );
-      res.json(result);
+      return res.status(200).json(result);
     });
 
     // for posting Questions
@@ -255,21 +256,21 @@ async function run() {
       const question = req.body;
       const result = await questionCollection.insertOne(question);
       console.log(result);
-      res.json(result);
+      return res.status(200).json(result);
     });
 
     // for getting all question //
     app.get("/questions", async (req, res) => {
       const cursor = questionCollection.find({});
       const questions = await cursor.toArray();
-      res.json(questions);
+      return res.status(200).json(questions);
     });
 
     // for single question
     app.get("/questions/:id", async (req, res) => {
       const query = { _id: ObjectId(req.params.id) };
       const cursor = await questionCollection.findOne(query);
-      res.json(cursor);
+      return res.status(200).json(cursor);
     });
 
     // for updating the question || adding answer
@@ -285,7 +286,7 @@ async function run() {
         updateDocs,
         options
       );
-      console;
+      return res.status(200).json(result);
     });
 
     //make admin
@@ -294,25 +295,8 @@ async function run() {
       const filter = { email: user.email };
       const updateUser = { $set: { role: "admin" } };
       const result = await usersColletion.updateOne(filter, updateUser);
-      res.json(result);
+      return res.status(200).json(result);
     });
-
-    app.use((req, res, next) => {
-      next("Your requested content was not found!")
-    })
-    
-    app.use((err, req, res, next) => {
-      if(req.headerSent){
-          next('There was a problem!');
-      }else{
-          if(err.message){
-              res.status(500).json({"error": err.message})
-          }  else{
-              res.status(500).json({"error": "There was an problem in server side"})
-          }
-      }
-    })
-
   } finally {
     // await client.close();
   }
@@ -321,8 +305,24 @@ async function run() {
 run().catch(console.dir);
 
 app.get("/", (req, res) => {
-  res.send("Programming Folks!");
+  return res.status(200).json(result);
 });
+
+app.use((req, res, next) => {
+  next("Your requested content was not found!")
+})
+
+app.use((err, req, res, next) => {
+  if(req.headerSent){
+      next('There was a problem!');
+  }else{
+      if(err.message){
+          res.status(500).json({"error": err.message})
+      }  else{
+          res.status(500).json({"error": "There was an problem in server side"})
+      }
+  }
+})
 
 app.listen(port, () => {
   console.log(`app listening at http://localhost:${port}`);
