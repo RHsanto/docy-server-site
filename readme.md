@@ -38,3 +38,8 @@ Frontend
 - UI Framework : NEXT.js
 - UI Design Framework : Tailwind, Material UI
 - State Management : Redux
+
+### 1/14/2023
+
+- addReviews route got changed to add-reviews
+- added error handler and not found middleware so that application can run 24/h

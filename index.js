@@ -12,7 +12,6 @@ app.use(cors());
 app.use(express.json());
 
 // mongo url and client //
-// mongo url and client //
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.avm9c.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
@@ -222,7 +221,7 @@ async function run() {
     });
 
     // for posting reviews
-    app.post("/addReviews", async (req, res) => {
+    app.post("/add-reviews", async (req, res) => {
       const blog = req.body;
       const result = await reviewsCollection.insertOne(blog);
       console.log(result);
@@ -290,7 +289,6 @@ async function run() {
     });
 
     //make admin
-
     app.put("/users/:email", async (req, res) => {
       const user = req.body;
       const filter = { email: user.email };
@@ -308,6 +306,22 @@ run().catch(console.dir);
 app.get("/", (req, res) => {
   res.send("Programming Folks!");
 });
+
+app.use((req, res, next) => {
+  next(createError(404, "Your requested content was not found!"));
+})
+
+app.use((err, req, res, next) => {
+  if(req.headerSent){
+      next('There was a problem!');
+  }else{
+      if(err.message){
+          res.status(500).json({"error": err.message})
+      }  else{
+          res.status(500).json({"error": "There was an problem in server side"})
+      }
+  }
+})
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
